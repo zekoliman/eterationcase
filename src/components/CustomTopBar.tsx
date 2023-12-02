@@ -20,9 +20,15 @@ type NavigationBarTypes = {
     | BottomTabNavigationProp<ParamListBase>;
   route: RouteProp<ParamListBase>;
   options: StackNavigationOptions | BottomTabNavigationOptions;
+  disableGoBack?: boolean;
 };
 
-const CustomTopBar = ({navigation, route, options}: NavigationBarTypes) => {
+const CustomTopBar = ({
+  navigation,
+  route,
+  options,
+  disableGoBack,
+}: NavigationBarTypes) => {
   const screenTitle = getHeaderTitle(options, route?.name);
 
   const goBack = () => {
@@ -35,7 +41,10 @@ const CustomTopBar = ({navigation, route, options}: NavigationBarTypes) => {
         numberOfLines={1}
         style={[
           styles.headerTitle,
-          {marginHorizontal: navigation.canGoBack() ? 77 : 16},
+          {
+            marginHorizontal:
+              navigation.canGoBack() && !disableGoBack ? 77 : 16,
+          },
         ]}>
         {screenTitle}
       </Text>
@@ -45,7 +54,7 @@ const CustomTopBar = ({navigation, route, options}: NavigationBarTypes) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerView}>
-        {navigation.canGoBack() && (
+        {navigation.canGoBack() && !disableGoBack && (
           <TouchableOpacity
             style={styles.leftIconView}
             activeOpacity={0.75}
@@ -61,8 +70,8 @@ const CustomTopBar = ({navigation, route, options}: NavigationBarTypes) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.mainColor,
-    alignItems: 'center',
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'center',
   },
   headerView: {
@@ -74,7 +83,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: Colors.white,
   },
-
   leftIconView: {
     position: 'absolute',
     left: 0,

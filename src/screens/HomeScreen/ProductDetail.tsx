@@ -8,7 +8,10 @@ import {
   View,
 } from 'react-native';
 import Colors from '../../theme/Colors';
-import {MainStackParams} from '../../navigations/MainStackNavigator';
+import {
+  MainStackParams,
+  NavigationProps,
+} from '../../navigations/MainStackNavigator';
 import {StackScreenProps} from '@react-navigation/stack';
 
 const ADD_TO_CART_BUTTON_TEXT = 'Add to Cart';
@@ -16,9 +19,9 @@ const PRICE_INFORMATION_TEXT = 'Price:';
 
 type Props = StackScreenProps<MainStackParams, 'ProductDetail'>;
 
-const ProductDetail: React.FC<Props> = ({navigation, route}) => {
-  const {products} = route?.params;
-  navigation.setOptions({title: products?.name});
+const ProductDetail: React.FC<Props> = (props: NavigationProps) => {
+  const {products} = props.route?.params;
+  props.navigation.setOptions({title: products?.name});
   return (
     <View style={styles.container}>
       <ScrollView>

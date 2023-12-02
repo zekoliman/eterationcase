@@ -5,6 +5,7 @@ import CustomTopBar from '../components/CustomTopBar';
 import SplashScreen from '../screens/SplashScreen';
 import {ProductResponse} from '../services/types/productType';
 import ProductDetail from '../screens/HomeScreen/ProductDetail';
+import {ParamListBase, RouteProp} from '@react-navigation/native';
 
 export type MainStackParams = {
   SplashScreen: undefined;
@@ -12,6 +13,11 @@ export type MainStackParams = {
   ProductDetail: {
     products: ProductResponse;
   };
+};
+
+export type NavigationProps = {
+  route: RouteProp<ParamListBase> | any;
+  navigation: any;
 };
 
 const MainNavigationWrapper: React.FC = () => {
@@ -23,6 +29,7 @@ const MainNavigationWrapper: React.FC = () => {
           title: 'E-Market',
           header: ({navigation, route, options}) => (
             <CustomTopBar
+              disableGoBack
               options={options}
               route={route}
               navigation={navigation}
