@@ -32,6 +32,7 @@ const CustomTopBar = ({navigation, route, options}: NavigationBarTypes) => {
   const renderHeader = () => {
     return (
       <Text
+        numberOfLines={1}
         style={[
           styles.headerTitle,
           {marginHorizontal: navigation.canGoBack() ? 77 : 16},
