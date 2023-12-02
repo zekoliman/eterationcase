@@ -11,14 +11,17 @@ import {
 } from 'react-native';
 import {useAppSelector} from '../../redux/hooks';
 import Colors from '../../theme/Colors';
+import {StackScreenProps} from '@react-navigation/stack';
+import {MainStackParams} from '../../navigations/MainStackNavigator';
 
 const FILTERS_TEXT = 'Filters';
 const SELECT_FILTER_TEXT = 'Select Filter';
 const SEARCH_PLACEHOLDER_TEXT = 'Search';
 const EMPTY_PRODUCTS_TEXT = 'Seçilen kriterde ürün bulunamadı';
 const ADD_TO_CART_BUTTON_TEXT = 'Add to Cart';
+type Props = StackScreenProps<MainStackParams, 'HomeScreen'>;
 
-const HomeScreen: React.FC = () => {
+const HomeScreen: React.FC<Props> = ({navigation}) => {
   const {products} = useAppSelector(state => state.products);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -61,7 +64,13 @@ const HomeScreen: React.FC = () => {
         contentContainerStyle={styles.productsContentContainer}
         renderItem={({item}) => (
           <View style={styles.productsContainer}>
-            <View style={[styles.shadow, styles.productContent]}>
+            <Pressable
+              onPress={() =>
+                navigation.navigate('ProductDetail', {
+                  products: item,
+                })
+              }
+              style={[styles.shadow, styles.productContent]}>
               <Image source={{uri: item.image}} style={styles.productImage} />
               <View style={styles.productInformationAreaText}>
                 <Text style={styles.productPriceText}>{item.price} ₺</Text>
@@ -76,7 +85,7 @@ const HomeScreen: React.FC = () => {
                   </Text>
                 </Pressable>
               </View>
-            </View>
+            </Pressable>
           </View>
         )}
       />
