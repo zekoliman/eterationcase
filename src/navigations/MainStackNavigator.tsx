@@ -3,10 +3,15 @@ import {createStackNavigator} from '@react-navigation/stack';
 import HomeScreen from '../screens/HomeScreen';
 import CustomTopBar from '../components/CustomTopBar';
 import SplashScreen from '../screens/SplashScreen';
+import {ProductResponse} from '../services/types/productType';
+import ProductDetail from '../screens/HomeScreen/ProductDetail';
 
-type MainStackParams = {
+export type MainStackParams = {
   SplashScreen: undefined;
   HomeScreen: undefined;
+  ProductDetail: {
+    products: ProductResponse;
+  };
 };
 
 const MainNavigationWrapper: React.FC = () => {
@@ -33,6 +38,19 @@ const MainNavigationWrapper: React.FC = () => {
         })}
         name="SplashScreen"
         component={SplashScreen}
+      />
+      <MainStack.Screen
+        options={() => ({
+          header: ({navigation, route, options}) => (
+            <CustomTopBar
+              options={options}
+              route={route}
+              navigation={navigation}
+            />
+          ),
+        })}
+        name="ProductDetail"
+        component={ProductDetail}
       />
     </MainStack.Navigator>
   );
