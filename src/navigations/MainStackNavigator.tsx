@@ -6,6 +6,7 @@ import SplashScreen from '../screens/SplashScreen';
 import {ProductResponse} from '../services/types/productType';
 import ProductDetail from '../screens/HomeScreen/ProductDetail';
 import {ParamListBase, RouteProp} from '@react-navigation/native';
+import CartScreen from '../screens/CartScreen';
 
 export type MainStackParams = {
   SplashScreen: undefined;
@@ -13,6 +14,7 @@ export type MainStackParams = {
   ProductDetail: {
     products: ProductResponse;
   };
+  CartScreen: undefined;
 };
 
 export type NavigationProps = {
@@ -58,6 +60,20 @@ const MainNavigationWrapper: React.FC = () => {
         })}
         name="ProductDetail"
         component={ProductDetail}
+      />
+      <MainStack.Screen
+        options={() => ({
+          title: 'Your Cart',
+          header: ({navigation, route, options}) => (
+            <CustomTopBar
+              options={options}
+              route={route}
+              navigation={navigation}
+            />
+          ),
+        })}
+        name="CartScreen"
+        component={CartScreen}
       />
     </MainStack.Navigator>
   );
