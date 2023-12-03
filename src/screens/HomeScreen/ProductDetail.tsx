@@ -8,19 +8,17 @@ import {
   View,
 } from 'react-native';
 import Colors from '../../theme/Colors';
-import {
-  MainStackParams,
-  NavigationProps,
-} from '../../navigations/MainStackNavigator';
+import {NavigationProps} from '../../navigations/MainStackNavigator';
 import {StackScreenProps} from '@react-navigation/stack';
 import {useAppDispatch} from '../../redux/hooks';
 import {ProductResponse} from '../../services/types/productType';
 import {addToCart, updateTotalAmount} from '../../redux/slices/cartSlice';
+import {HomeBottomParams} from '../../navigations/HomeBottomNavigator';
 
 const ADD_TO_CART_BUTTON_TEXT = 'Add to Cart';
 const PRICE_INFORMATION_TEXT = 'Price:';
 
-type Props = StackScreenProps<MainStackParams, 'ProductDetail'>;
+type Props = StackScreenProps<HomeBottomParams, 'ProductDetail'>;
 
 const ProductDetail: React.FC<Props> = (props: NavigationProps) => {
   const {products} = props.route?.params;
@@ -109,10 +107,6 @@ const styles = StyleSheet.create({
   },
   productDescriptionContainer: {
     paddingTop: 16,
-  },
-  productPriceText: {
-    color: Colors.mainColor,
-    fontWeight: '500',
   },
   addToCartButtonText: {
     color: Colors.white,

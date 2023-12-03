@@ -10,7 +10,7 @@ const SplashScreen: React.FC = ({navigation}) => {
     dispatch(setGlobalLoadState(true));
     await dispatch(getProducts());
     setTimeout(() => {
-      navigation.navigate('HomeScreen');
+      navigation.navigate('HomeBottomWrapper');
     }, 500);
     return dispatch(setGlobalLoadState(false));
   };

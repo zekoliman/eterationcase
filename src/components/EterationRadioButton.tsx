@@ -5,7 +5,7 @@ import Colors from '../theme/Colors';
 type EterationRadioButtonProps = {
   isSelected: boolean;
   containerStyle?: ViewStyle;
-  size?: Number;
+  size?: number;
   buttonText: string;
 };
 
@@ -16,14 +16,14 @@ const EterationRadioButton: React.FC<EterationRadioButtonProps> = ({
 }: EterationRadioButtonProps) => {
   const backgroundColor = isSelected ? Colors.mainColor : Colors.white;
   return (
-    <View style={[styles.container, containerStyle]}>
+    <View style={[styles.radioButtonContainer, containerStyle]}>
       <View style={styles.radioView}>
         <View
-          style={[styles.radioButtonView, {backgroundColor: backgroundColor}]}
+          style={[styles.radioButton, {backgroundColor: backgroundColor}]}
         />
       </View>
-      <View style={{paddingLeft: 9}}>
-        <Text style={{fontSize: 14, color: '#333333'}}>{buttonText}</Text>
+      <View style={styles.buttonTextContainer}>
+        <Text style={styles.buttonText}>{buttonText}</Text>
       </View>
     </View>
   );
@@ -32,7 +32,7 @@ const EterationRadioButton: React.FC<EterationRadioButtonProps> = ({
 export default EterationRadioButton;
 
 const styles = StyleSheet.create({
-  container: {
+  radioButtonContainer: {
     marginRight: 5,
     paddingRight: 10,
     paddingVertical: 5,
@@ -49,8 +49,15 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 2,
   },
-  radioButtonView: {
+  radioButton: {
     padding: 4,
     borderRadius: 8,
+  },
+  buttonTextContainer: {
+    paddingLeft: 9,
+  },
+  buttonText: {
+    fontSize: 14,
+    color: Colors.textDark,
   },
 });
