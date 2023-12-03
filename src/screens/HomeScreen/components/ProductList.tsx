@@ -1,7 +1,19 @@
 import React, {useState} from 'react';
-import {FlatList, Text, View, Image, Pressable, StyleSheet} from 'react-native';
+import {
+  FlatList,
+  Text,
+  View,
+  Image,
+  Pressable,
+  StyleSheet,
+  ActivityIndicator,
+} from 'react-native';
 import Colors from '../../../theme/Colors';
 import ProductFilter from './ProductFilter';
+import {useAppDispatch} from '../../../redux/hooks';
+import {addToCart, updateTotalAmount} from '../../../redux/slices/cartSlice';
+import {ProductResponse} from '../../../services/types/productType';
+import {getProducts, incrementPage} from '../../../redux/slices/productsSlice';
 
 interface Product {
   name: string;
@@ -13,13 +25,19 @@ interface ProductListProps {
   products: Product[];
   navigation: any;
   headerComponent?: any;
+  isLoading: boolean;
 }
 
 const EMPTY_PRODUCTS_TEXT = 'No products found';
 const ADD_TO_CART_BUTTON_TEXT = 'Add to Cart';
 
-const ProductList: React.FC<ProductListProps> = ({products, navigation}) => {
-  const [selectedFilters, setSelectedFilters] = useState('');
+const ProductList: React.FC<ProductListProps> = ({
+  products,
+  navigation,
+  isLoading,
+}) => {
+  const dispatch = useAppDispatch();
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
 
   const handleFilterChange = (item: string, title: string) => {
     if (title === 'Sort By') {
@@ -36,6 +54,18 @@ const ProductList: React.FC<ProductListProps> = ({products, navigation}) => {
     setSelectedFilters(updatedFilters);
   };
 
+  const handleAddToCart = (product: ProductResponse) => {
+    dispatch(addToCart(product));
+    dispatch(updateTotalAmount());
+    setTimeout(() => {
+      navigation.navigate('CartScreen');
+    }, 500);
+  };
+
+  const handleIncrementPage = () => {
+    dispatch(incrementPage());
+    dispatch(getProducts());
+  };
   return (
     <>
       <ProductFilter
@@ -47,15 +77,18 @@ const ProductList: React.FC<ProductListProps> = ({products, navigation}) => {
         <FlatList
           data={products}
           initialNumToRender={12}
-          contentContainerStyle={styles.productsContentContainer}
+          maxToRenderPerBatch={12}
           ListEmptyComponent={<Text>{EMPTY_PRODUCTS_TEXT}</Text>}
-          renderItem={({item}) => (
+          numColumns={2}
+          columnWrapperStyle={styles.productsContentContainer}
+          onEndReached={handleIncrementPage}
+          renderItem={({item}: any) => (
             <View style={styles.productsContainer}>
               <Pressable
                 onPress={() =>
                   navigation.navigate('ProductDetail', {products: item})
                 }
-                style={[styles.shadow, styles.productContent]}>
+                style={styles.productContent}>
                 <Image source={{uri: item.image}} style={styles.productImage} />
                 <View style={styles.productInformationAreaText}>
                   <Text style={styles.productPriceText}>{item.price} ₺</Text>
@@ -66,7 +99,9 @@ const ProductList: React.FC<ProductListProps> = ({products, navigation}) => {
                   </Text>
                 </View>
                 <View style={styles.productInformationAreaText}>
-                  <Pressable style={styles.productAddToCartButton}>
+                  <Pressable
+                    onPress={() => handleAddToCart(item)}
+                    style={styles.productAddToCartButton}>
                     <Text style={styles.addToCartButtonText}>
                       {ADD_TO_CART_BUTTON_TEXT}
                     </Text>
@@ -76,6 +111,11 @@ const ProductList: React.FC<ProductListProps> = ({products, navigation}) => {
             </View>
           )}
         />
+        {isLoading && (
+          <View>
+            <ActivityIndicator size={'large'} />
+          </View>
+        )}
       </View>
     </>
   );
@@ -86,16 +126,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.white,
   },
-  shadow: {
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 1,
-      height: 1,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 24.0,
-    elevation: 6,
-  },
+
   productsContainer: {
     flex: 1,
   },
@@ -129,11 +160,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   productsContentContainer: {
-    paddingTop: 21,
-    gap: 21,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
+    flex: 1,
+    justifyContent: 'space-around',
   },
 });
 

@@ -13,6 +13,9 @@ import {
   NavigationProps,
 } from '../../navigations/MainStackNavigator';
 import {StackScreenProps} from '@react-navigation/stack';
+import {useAppDispatch} from '../../redux/hooks';
+import {ProductResponse} from '../../services/types/productType';
+import {addToCart, updateTotalAmount} from '../../redux/slices/cartSlice';
 
 const ADD_TO_CART_BUTTON_TEXT = 'Add to Cart';
 const PRICE_INFORMATION_TEXT = 'Price:';
@@ -21,7 +24,17 @@ type Props = StackScreenProps<MainStackParams, 'ProductDetail'>;
 
 const ProductDetail: React.FC<Props> = (props: NavigationProps) => {
   const {products} = props.route?.params;
+  const dispatch = useAppDispatch();
   props.navigation.setOptions({title: products?.name});
+
+  const handleAddToCart = (product: ProductResponse) => {
+    dispatch(addToCart(product));
+    dispatch(updateTotalAmount());
+    setTimeout(() => {
+      props.navigation.navigate('CartScreen');
+    }, 500);
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -45,7 +58,9 @@ const ProductDetail: React.FC<Props> = (props: NavigationProps) => {
           <Text style={styles.priceText}>{products.price} ₺</Text>
         </View>
         <View style={styles.productText}>
-          <Pressable style={styles.productAddToCartButton}>
+          <Pressable
+            onPress={() => handleAddToCart(products)}
+            style={styles.productAddToCartButton}>
             <Text style={styles.addToCartButtonText}>
               {ADD_TO_CART_BUTTON_TEXT}
             </Text>

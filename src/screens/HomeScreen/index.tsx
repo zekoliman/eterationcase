@@ -9,11 +9,17 @@ import ProductList from './components/ProductList';
 type Props = StackScreenProps<MainStackParams, 'HomeScreen'>;
 
 const HomeScreen: React.FC<Props> = ({navigation}) => {
-  const {products} = useAppSelector(state => state.products);
+  const {products, isLoading} = useAppSelector(state => state.products);
 
   return (
     <View style={styles.container}>
-      {products && <ProductList products={products} navigation={navigation} />}
+      {products && (
+        <ProductList
+          products={products}
+          isLoading={isLoading}
+          navigation={navigation}
+        />
+      )}
     </View>
   );
 };

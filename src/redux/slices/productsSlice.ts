@@ -10,6 +10,7 @@ interface InitialState {
   products: ProductResponse[] | null;
   isError: boolean;
   errorMessage: ErrorMessageTypes | null;
+  currentPage: number;
 }
 
 const initialState: InitialState = {
@@ -17,12 +18,15 @@ const initialState: InitialState = {
   products: null,
   isError: false,
   errorMessage: null,
+  currentPage: 1,
 };
 
 export const getProducts = createAsyncThunk(
   'products',
-  async (): Promise<ProductResponse[]> => {
-    const res = await fetchProducts();
+  async (_, {getState}): Promise<ProductResponse[]> => {
+    const state = getState();
+    const pageSize = 12;
+    const res = await fetchProducts(state.products.currentPage, pageSize);
     return res;
   },
 );
@@ -30,7 +34,11 @@ export const getProducts = createAsyncThunk(
 const productsSlice = createSlice({
   name: 'products',
   initialState,
-  reducers: {},
+  reducers: {
+    incrementPage: state => {
+      state.currentPage += 1;
+    },
+  },
   extraReducers: builder => {
     builder.addCase(getProducts.pending, state => {
       return {
@@ -42,9 +50,12 @@ const productsSlice = createSlice({
       return {
         ...state,
         isLoading: false,
-        products: action.payload,
+        products: state.products
+          ? [...state.products, ...action.payload]
+          : action.payload,
         isError: false,
         errorMessage: null,
+        currentPage: state.currentPage + 1,
       };
     });
     builder.addCase(getProducts.rejected, (state, _) => {
@@ -61,5 +72,7 @@ const productsSlice = createSlice({
     });
   },
 });
+
+export const {incrementPage} = productsSlice.actions;
 
 export default productsSlice;
