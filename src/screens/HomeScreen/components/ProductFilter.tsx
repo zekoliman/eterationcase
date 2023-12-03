@@ -22,12 +22,14 @@ type ProductFilterProps = {
   products: any;
   selectedFilters: any;
   onFilterChange: (item: string, title: string) => void;
+  onCleanFilters: () => void;
 };
 
 const ProductFilter: React.FC<ProductFilterProps> = ({
   products,
   selectedFilters,
   onFilterChange,
+  onCleanFilters,
 }) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [filterData, setFilterData] = useState<any>([]);
@@ -80,10 +82,7 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
           />
         </View>
         <View style={styles.filterContainer2}>
-          <Text
-            style={
-              styles.filtersText
-            }>{`${FILTERS_TEXT} : ${selectedFilters}`}</Text>
+          <Text style={styles.filtersText}>{`${FILTERS_TEXT} : `}</Text>
           <Pressable
             onPress={filterModalOptions}
             style={styles.selectFilterButton}>
@@ -119,18 +118,12 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
               <Text style={styles.sortByText}>
                 Please first select Sort By category
               </Text>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={onCleanFilters}>
                 <Text style={styles.sortByText}>Clean </Text>
               </TouchableOpacity>
             </View>
             {filterData.map(
-              (
-                section: {
-                  title: string;
-                  data: any;
-                },
-                index: number,
-              ) => (
+              (section: {title: string; data: any}, index: number) => (
                 <View style={styles.filterSection} key={index}>
                   <Text style={styles.filterSectionTitle}>{section.title}</Text>
                   <ScrollView bounces={false} style={styles.filterScrollView}>
@@ -140,11 +133,14 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
                         onPress={() => onFilterChange(item, section.title)}
                         style={styles.filterItem}>
                         <EterationRadioButton
-                          isSelected={
-                            selectedFilters
-                              ? selectedFilters.includes(item)
-                              : false
-                          }
+                          isSelected={selectedFilters.some(
+                            (filter: {
+                              category: string;
+                              data: string | string[];
+                            }) =>
+                              filter.category === section.title.toLowerCase() &&
+                              filter.data.includes(item),
+                          )}
                           containerStyle={styles.radioButtonContainer}
                           buttonText={item}
                         />
